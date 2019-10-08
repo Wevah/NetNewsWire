@@ -267,6 +267,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSUserInterfaceValidations, 
 		_ = group.wait(timeout: timeout)
 	}
 
+	func applicationDockMenu(_ sender: NSApplication) -> NSMenu? {
+		return DockMenuController.shared.menu
+	}
+
 	// MARK: Notifications
 	@objc func unreadCountDidChange(_ note: Notification) {
 
