@@ -57,11 +57,9 @@ class DockMenuController: NSObject, NSMenuDelegate {
 				if let body = article.body {
 					var s = body
 					s = s.rsparser_stringByDecodingHTMLEntities()
-					s = s.rs_string(byStrippingHTML: 50)
+					s = s.rs_string(byStrippingHTML: 80)
 					s = s.rs_stringByTrimmingWhitespace()
 					s = s.rs_stringWithCollapsedWhitespace()
-
-					if s.count < body.count { s = s.appending("…") }
 
 					title = s
 				} else {
