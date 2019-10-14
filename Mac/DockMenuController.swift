@@ -38,9 +38,9 @@ class DockMenuController: NSObject, NSMenuDelegate {
 		}
 	}
 
-	private func updateMenu(_ menu: NSMenu, forFeed feed: Feed) {
+	private func menuForFeed(_ feed: Feed) -> NSMenu {
+		let menu = NSMenu(title: feed.nameForDisplay)
 		let sortOrder = AppDefaults.timelineSortDirection
-
 		let articles = feed.fetchUnreadArticles()
 
 		let sortedArticles = articles.sorted { (a, b) -> Bool in
@@ -83,45 +83,56 @@ class DockMenuController: NSObject, NSMenuDelegate {
 		item = menu.addItem(withTitle: NSLocalizedString("Mark All as Read", comment: "Mark all articles as read"), action: #selector(markArticlesAsRead(forMenuItem:)), keyEquivalent: "")
 		item.target = self
 		item.representedObject = articles
+
+		return menu
 	}
 
-	private var menuMap = [NSMenu: Feed]()
+	func menuForContainer(_ container: Container & DisplayNameProvider) -> NSMenu? {
+		if container.topLevelFeeds.count == 0 && container.folders?.count == 0 { return nil }
 
-	func menuNeedsUpdate(_ menu: NSMenu) {
-		if let feed = menuMap[menu] {
-			updateMenu(menu, forFeed: feed)
+		let containerMenu = NSMenu()
+
+		let sortedFeeds = container.topLevelFeeds.sorted { (a, b) -> Bool in
+			return a.nameForDisplay.compare(b.nameForDisplay, options: .caseInsensitive) == .orderedAscending
 		}
-	}
 
-	func menuHasKeyEquivalent(_ menu: NSMenu, for event: NSEvent, target: AutoreleasingUnsafeMutablePointer<AnyObject?>, action: UnsafeMutablePointer<Selector?>) -> Bool {
-		return false
+		var sortedFolders: [Folder]? = nil
+
+		if let folders = container.folders {
+			sortedFolders = folders.sorted { (a, b) -> Bool in
+				return a.nameForDisplay.compare(b.nameForDisplay, options: .caseInsensitive) == .orderedAscending
+			}
+		}
+
+		for feed in sortedFeeds {
+			if feed.unreadCount == 0 { continue }
+			let item = containerMenu.addItem(withTitle: feed.nameForDisplay, action: nil, keyEquivalent: "")
+			item.submenu = menuForFeed(feed)
+		}
+
+		if let sortedFolders = sortedFolders {
+			for folder in sortedFolders {
+				let folderItem = NSMenuItem(title: folder.nameForDisplay, action: nil, keyEquivalent: "")
+				folderItem.submenu = menuForContainer(folder)
+				containerMenu.addItem(folderItem)
+			}
+		}
+
+		return containerMenu;
 	}
 
 	var menu: NSMenu {
-		menuMap.removeAll()
 		let menu = NSMenu()
 
-		for (index, account) in AccountManager.shared.activeAccounts.enumerated() {
-			if index != 0 { menu.addItem(.separator()) }
-
+		for account in AccountManager.shared.activeAccounts {
+			menu.addSeparatorIfNeeded()
 			menu.addItem(withTitle: account.nameForDisplay, action: nil, keyEquivalent: "")
 
-			let sortedFeeds = account.topLevelFeeds.sorted { (a, b) -> Bool in
-				return a.nameForDisplay.compare(b.nameForDisplay, options: .caseInsensitive) == .orderedAscending
-			}
-
-			for feed in sortedFeeds {
-				if feed.unreadCount == 0 { continue }
-
-				let item = menu.addItem(withTitle: feed.nameForDisplay, action: nil, keyEquivalent: "")
-				let submenu = NSMenu(title: feed.nameForDisplay)
-
-				//menuMap[submenu] = feed
-
-				updateMenu(submenu, forFeed: feed)
-
-				item.submenu = submenu
-				//submenu.delegate = self
+			if let accountMenu = menuForContainer(account) {
+				for item in accountMenu.items {
+					accountMenu.removeItem(item)
+					menu.addItem(item)
+				}
 			}
 		}
 
