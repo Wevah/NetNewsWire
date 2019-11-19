@@ -225,6 +225,8 @@ private extension DetailWebViewController {
 		}
 
 		webView.evaluateJavaScript(render)
+		setFontFamilyFromDefaults()
+
 	}
 
 	func fetchScrollInfo(_ callback: @escaping (ScrollInfo?) -> Void) {
@@ -246,6 +248,10 @@ private extension DetailWebViewController {
 			let scrollInfo = ScrollInfo(contentHeight: contentHeight, viewHeight: self.webView.frame.height, offsetY: offsetY)
 			callback(scrollInfo)
 		}
+	}
+
+	func setFontFamilyFromDefaults() {
+		webView.fontFamily = AppDefaults.detailFontFamily
 	}
 
 	#if !MAC_APP_STORE

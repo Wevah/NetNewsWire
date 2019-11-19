@@ -24,6 +24,7 @@ struct AppDefaults {
 		static let timelineSortDirection = "timelineSortDirection"
 		static let timelineGroupByFeed = "timelineGroupByFeed"
 		static let detailFontSize = "detailFontSize"
+		static let detailFontFamily = "detailFontFamily"
 		static let openInBrowserInBackground = "openInBrowserInBackground"
 		static let mainWindowWidths = "mainWindowWidths"
 		static let refreshInterval = "refreshInterval"
@@ -250,6 +251,15 @@ struct AppDefaults {
 			return actualFontSize(for: .medium) + 4.0
 		case .veryLarge:
 			return actualFontSize(for: .large) + 8.0
+		}
+	}
+
+	static var detailFontFamily: String? {
+		get {
+			return string(for: Key.detailFontFamily)
+		}
+		set {
+			setString(for: Key.detailFontFamily, newValue)
 		}
 	}
 }

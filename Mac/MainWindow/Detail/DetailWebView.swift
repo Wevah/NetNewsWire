@@ -54,6 +54,19 @@ final class DetailWebView: WKWebView {
 		super.viewDidEndLiveResize()
 		evaluateJavaScript("document.body.style.overflow = 'visible';", completionHandler: nil)
 	}
+
+	var fontSize: Int? {
+		didSet {
+			let sizeString = fontSize != nil ? "\(fontSize!)px" : ""
+			evaluateJavaScript("document.body.style.fontSize = '\(sizeString)'", completionHandler: nil)
+		}
+	}
+
+	var fontFamily: String? {
+		didSet {
+			evaluateJavaScript("document.body.style.fontFamily = '\(fontFamily ?? "")'", completionHandler: nil)
+		}
+	}
 }
 
 // MARK: - Private
