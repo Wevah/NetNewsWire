@@ -64,6 +64,10 @@ final class DetailWebViewController: NSViewController, WKUIDelegate {
 		preferences.javaScriptCanOpenWindowsAutomatically = false
 		preferences.javaScriptEnabled = true
 
+		#if !MAC_APP_STORE
+			preferences._allowsPictureInPictureMediaPlayback = true
+		#endif
+
 		let configuration = WKWebViewConfiguration()
 		configuration.preferences = preferences
 		configuration.setURLSchemeHandler(articleIconSchemeHandler, forURLScheme: ArticleRenderer.imageIconScheme)
