@@ -7,6 +7,7 @@
 //
 
 import RSParser
+import os.log
 
 #if canImport(AppKit)
 import AppKit
@@ -191,7 +192,10 @@ extension NSAttributedString {
 		result.addAttribute(.font, value: baseFont, range: NSRange(location: 0, length: result.length))
 
 		for (range, styles) in attributeRanges {
-			if range.location + range.length > result.length { continue }
+			if range.location + range.length > result.length {
+				os_log("Range %{public}@ out of bounds for attributed string length %d", type: .error, range.description, result.length)
+				continue
+			}
 
 			let currentFont = result.attribute(.font, at: range.location, effectiveRange: nil) as! Font
 			let currentDescriptor = currentFont.fontDescriptor
