@@ -100,12 +100,7 @@ extension NSAttributedString {
 		}
 	}
 
-	/// Returns an attributed string initialized from  HTML text containing basic inline stylistic tags.
-	///
-	/// - Parameters:
-	///   - html: The HTML text.
-	///   - locale: The locale used for quotation marks when parsing `<q>` tags.
-	convenience init(html: String, locale: Locale = Locale.current) {
+	private static func createFromHTML(_ html: String, locale: Locale) -> NSAttributedString {
 		let baseFont = Font.systemFont(ofSize: Font.systemFontSize)
 
 		var inTag: InTag = .none
@@ -178,7 +173,6 @@ extension NSAttributedString {
 
 						if (entitychar == ";") { break }
 					}
-
 
 					result.mutableString.append(entity.decodedEntity)
 
@@ -254,7 +248,16 @@ extension NSAttributedString {
 			result.addAttributes(attributes, range: range)
 		}
 
-		self.init(attributedString: result)
+		return result as NSAttributedString
+	}
+
+	/// Returns an attributed string initialized from  HTML text containing basic inline stylistic tags.
+	///
+	/// - Parameters:
+	///   - html: The HTML text.
+	///   - locale: The locale used for quotation marks when parsing `<q>` tags.
+	convenience init(html: String, locale: Locale = Locale.current) {
+		self.init(attributedString: Self.createFromHTML(html, locale: locale))
 	}
 
 }
