@@ -191,7 +191,7 @@ extension NSAttributedString {
 		result.addAttribute(.font, value: baseFont, range: NSRange(location: 0, length: result.length))
 
 		for (range, styles) in attributeRanges {
-			if range.location >= result.length { continue }
+			if range.location + range.length > result.length { continue }
 
 			let currentFont = result.attribute(.font, at: range.location, effectiveRange: nil) as! Font
 			let currentDescriptor = currentFont.fontDescriptor
