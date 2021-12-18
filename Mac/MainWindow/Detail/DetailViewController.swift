@@ -25,6 +25,13 @@ final class DetailViewController: NSViewController, WKUIDelegate {
 	@IBOutlet var containerView: DetailContainerView!
 	@IBOutlet var statusBarView: DetailStatusBarView!
 
+	@IBOutlet var statusBarConstraintLeadingFixed: NSLayoutConstraint!
+	@IBOutlet var statusBarConstraintTrailingFlexible: NSLayoutConstraint!
+
+	@IBOutlet var statusBarConstraintLeadingFlexible: NSLayoutConstraint!
+	@IBOutlet var statusBarConstraintTrailingFixed: NSLayoutConstraint!
+
+
 	lazy var regularWebViewController = {
 		return createWebViewController()
 	}()
@@ -99,11 +106,30 @@ final class DetailViewController: NSViewController, WKUIDelegate {
 
 extension DetailViewController: DetailWebViewControllerDelegate {
 
+	func setStatusBarIsTrailing(_ flag: Bool) {
+		if (flag) {
+			NSLayoutConstraint.deactivate([statusBarConstraintLeadingFixed, statusBarConstraintTrailingFlexible])
+			NSLayoutConstraint.activate([statusBarConstraintLeadingFlexible, statusBarConstraintTrailingFixed])
+		} else {
+			NSLayoutConstraint.deactivate([statusBarConstraintLeadingFlexible, statusBarConstraintTrailingFixed])
+			NSLayoutConstraint.activate([statusBarConstraintLeadingFixed, statusBarConstraintTrailingFlexible])
+		}
+	}
+
 	func mouseDidEnter(_ detailWebViewController: DetailWebViewController, link: String) {
 		guard !link.isEmpty, detailWebViewController === currentWebViewController else {
 			return
 		}
 		statusBarView.mouseoverLink = link
+
+		var mouseLocation = detailWebViewController.webView.window!.convertPoint(fromScreen: NSEvent.mouseLocation)
+		mouseLocation = detailWebViewController.webView.convert(mouseLocation, from: nil)
+		mouseLocation = containerView.convert(mouseLocation, from: detailWebViewController.webView)
+
+		let halfway = containerView.bounds.width / 2.0
+		let height = statusBarView.frame.height * 2.0
+
+		setStatusBarIsTrailing(mouseLocation.x < halfway && mouseLocation.y < height)
 	}
 
 	func mouseDidExit(_ detailWebViewController: DetailWebViewController) {
