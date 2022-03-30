@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="19162" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="20037" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="19162"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="20037"/>
     </dependencies>
     <scenes>
         <!--Application-->
@@ -127,6 +127,17 @@
                                         <menuItem title="Close Window" keyEquivalent="w" id="DVo-aG-piG">
                                             <connections>
                                                 <action selector="performClose:" target="Ady-hI-5gd" id="HmO-Ls-i7Q"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem isSeparatorItem="YES" id="ssd-mj-ATG"/>
+                                        <menuItem title="Page Setup…" keyEquivalent="P" id="y9y-RU-lPW">
+                                            <connections>
+                                                <action selector="runPageLayout:" target="Ady-hI-5gd" id="fvW-2q-Gae"/>
+                                            </connections>
+                                        </menuItem>
+                                        <menuItem title="Print…" keyEquivalent="p" id="BjI-ho-6p3">
+                                            <connections>
+                                                <action selector="printDocument:" target="Ady-hI-5gd" id="gra-oq-Sq3"/>
                                             </connections>
                                         </menuItem>
                                     </items>

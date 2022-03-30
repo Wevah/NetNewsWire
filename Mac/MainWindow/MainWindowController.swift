@@ -276,6 +276,11 @@ class MainWindowController : NSWindowController, NSUserInterfaceValidations {
 
 			return true
 		}
+
+		if item.action == #selector(printDocument(_:)) {
+			guard let timeline = self.timelineContainerViewController?.currentTimelineViewController else { return false }
+			return timeline.selectedArticles.count == 1
+		}
 		
 		return true
 	}
@@ -539,6 +544,13 @@ class MainWindowController : NSWindowController, NSUserInterfaceValidations {
 	
 	@objc func selectArticleTheme(_ menuItem: NSMenuItem) {
 		ArticleThemesManager.shared.currentThemeName = menuItem.title
+	}
+
+	@IBAction func printDocument(_ sender: Any?) {
+		guard let webView = detailViewController?.currentWebViewController.webView else { return }
+		let printOperation = webView.printOperation(with: .shared)
+		printOperation.view?.frame = webView.frame
+		printOperation.runModal(for: self.window!, delegate: nil, didRun: nil, contextInfo: nil)
 	}
 	
 }
