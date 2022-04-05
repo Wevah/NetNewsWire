@@ -157,7 +157,13 @@ final class DetailWebViewController: NSViewController {
 	func stopMediaPlayback() {
 		webView.evaluateJavaScript("stopMediaPlayback();")
 	}
-	
+
+	func disableLazyImages(_ completion: (() -> Void)? = nil) {
+		webView.callAsyncJavaScript("await disableLazyImages()", arguments: [:], in: nil, in: .page) { result in
+			completion?()
+		}
+	}
+
 	// MARK: Scrolling
 
 	func canScrollDown(_ completion: @escaping (Bool) -> Void) {

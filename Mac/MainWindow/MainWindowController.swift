@@ -547,10 +547,13 @@ class MainWindowController : NSWindowController, NSUserInterfaceValidations {
 	}
 
 	@IBAction func printDocument(_ sender: Any?) {
-		guard let webView = detailViewController?.currentWebViewController.webView else { return }
-		let printOperation = webView.printOperation(with: .shared)
-		printOperation.view?.frame = webView.frame
-		printOperation.runModal(for: self.window!, delegate: nil, didRun: nil, contextInfo: nil)
+		guard let controller = detailViewController?.currentWebViewController, let webView = controller.webView else { return }
+		
+		controller.disableLazyImages() {
+			let printOperation = webView.printOperation(with: .shared)
+			printOperation.view?.frame = webView.frame
+			printOperation.runModal(for: self.window!, delegate: nil, didRun: nil, contextInfo: nil)
+		}
 	}
 	
 }

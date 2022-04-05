@@ -156,6 +156,27 @@ function removeWpSmiley() {
 	}
 }
 
+// For printing. From https://stackoverflow.com/a/56341485/14256.
+async function disableLazyImages() {
+	const promiseArray = []; // create an array for promises
+	const imageArray = []; // array for the images
+
+	for (const imgElement of document.images) {
+		imgElement.removeAttribute("loading");
+
+		promiseArray.push(new Promise(resolve => {
+			const img = new Image();
+
+			img.onload = resolve
+
+			img.src = imgElement.src;
+			imageArray.push(img);
+		}));
+	}
+
+	await Promise.all(promiseArray); // wait for all the images to be loaded
+}
+
 function processPage() {
 	wrapFrames();
 	wrapTables();
