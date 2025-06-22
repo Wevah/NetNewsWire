@@ -93,6 +93,8 @@ final class DetailWebViewController: NSViewController {
 		let preferences = WKPreferences()
 		preferences.minimumFontSize = 12.0
 		preferences.javaScriptCanOpenWindowsAutomatically = false
+		preferences.isElementFullscreenEnabled = true
+		preferences._allowsPictureInPictureMediaPlayback = true
 
 		let configuration = WKWebViewConfiguration()
 		configuration.preferences = preferences
